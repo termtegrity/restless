@@ -26,9 +26,12 @@ class DjangoResource(Resource):
 
         if getattr(self, 'paginate', False):
             page_size = getattr(self, 'page_size', getattr(settings, 'RESTLESS_PAGE_SIZE', 10))
+            if self.request.GET.get('page_size', None):
+                page_size = int(self.request.GET.get('page_size'))
+
             paginator = Paginator(data, page_size)
 
-            page_number = self.request.GET.get('p', 1)
+            page_number = int(self.request.GET.get('p', 1))
 
             if page_number not in paginator.page_range:
                 raise BadRequest('Invalid page number')
